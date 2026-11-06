@@ -4,6 +4,7 @@ use Chaima24\AlgeriaGeo\Models\Commune;
 use Chaima24\AlgeriaGeo\Models\Daira;
 use Chaima24\AlgeriaGeo\Models\Region;
 use Chaima24\AlgeriaGeo\Models\Wilaya;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Schema;
 
@@ -18,8 +19,15 @@ function removePublishedFiles(): void
     File::delete(config_path('algeria-geo.php'));
 }
 
-beforeEach(fn () => removePublishedFiles());
-afterEach(fn () => removePublishedFiles());
+beforeEach(function () {
+    removePublishedFiles();
+    Artisan::call('db:wipe');
+});
+
+afterEach(function () {
+    removePublishedFiles();
+    Artisan::call('db:wipe');
+});
 
 it('installs wilayas and communes only by default', function () {
     $this->artisan('algeria-geo:install')->assertSuccessful();
@@ -70,4 +78,14 @@ it('keeps your published config', function () {
     $this->artisan('algeria-geo:install')->assertSuccessful();
 
     expect(File::get(config_path('algeria-geo.php')))->toContain('mine');
+});
+
+it('can be rolled back', function () {
+    $this->artisan('algeria-geo:install', ['--regions' => true, '--dairas' => true])->assertSuccessful();
+    $this->artisan('migrate:rollback')->assertSuccessful();
+
+    expect(Schema::hasTable('wilayas'))->toBeFalse()
+        ->and(Schema::hasTable('communes'))->toBeFalse()
+        ->and(Schema::hasTable('regions'))->toBeFalse()
+        ->and(Schema::hasTable('dairas'))->toBeFalse();
 });
