@@ -1,5 +1,6 @@
 <?php
 
+use Chaima24\AlgeriaGeo\Database\AlgeriaGeoSeeder;
 use Chaima24\AlgeriaGeo\Models\Commune;
 use Chaima24\AlgeriaGeo\Models\Wilaya;
 use Illuminate\Support\Facades\Schema;
@@ -15,4 +16,12 @@ it('works with wilayas and communes only', function () {
 
     expect($commune->wilaya->is($wilaya))->toBeTrue()
         ->and($wilaya->communes)->toHaveCount(1);
+});
+
+it('seeds wilayas and communes without regions or dairas', function () {
+    $this->seed(AlgeriaGeoSeeder::class);
+
+    expect(Wilaya::count())->toBe(69)
+        ->and(Commune::count())->toBe(1541)
+        ->and(Commune::find(101)->wilaya->name)->toBe('Adrar');
 });
