@@ -2,6 +2,7 @@
 
 namespace Chaima24\AlgeriaGeo;
 
+use Chaima24\AlgeriaGeo\Console\InstallCommand;
 use Illuminate\Support\ServiceProvider;
 
 class AlgeriaGeoServiceProvider extends ServiceProvider
@@ -22,5 +23,9 @@ class AlgeriaGeoServiceProvider extends ServiceProvider
         $this->publishes([$migrations.'/core' => database_path('migrations')], 'algeria-geo-migrations');
         $this->publishes([$migrations.'/regions' => database_path('migrations')], 'algeria-geo-regions');
         $this->publishes([$migrations.'/dairas' => database_path('migrations')], 'algeria-geo-dairas');
+
+        if ($this->app->runningInConsole()) {
+            $this->commands([InstallCommand::class]);
+        }
     }
 }
