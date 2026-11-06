@@ -14,3 +14,15 @@ it('lets the app publish the config', function () {
     expect($paths)->toHaveCount(1)
         ->and(array_values($paths)[0])->toBe(config_path('algeria-geo.php'));
 });
+
+it('publishes each migration group separately', function (string $tag, string $folder) {
+    $paths = ServiceProvider::pathsToPublish(AlgeriaGeoServiceProvider::class, $tag);
+
+    expect($paths)->toHaveCount(1)
+        ->and(array_key_first($paths))->toEndWith($folder)
+        ->and(array_values($paths)[0])->toBe(database_path('migrations'));
+})->with([
+    ['algeria-geo-migrations', 'core'],
+    ['algeria-geo-regions', 'regions'],
+    ['algeria-geo-dairas', 'dairas'],
+]);

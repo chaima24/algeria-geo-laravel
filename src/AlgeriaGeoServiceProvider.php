@@ -16,5 +16,11 @@ class AlgeriaGeoServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__.'/../config/algeria-geo.php' => config_path('algeria-geo.php'),
         ], 'algeria-geo-config');
+
+        $migrations = __DIR__.'/../database/migrations';
+
+        $this->publishes([$migrations.'/core' => database_path('migrations')], 'algeria-geo-migrations');
+        $this->publishes([$migrations.'/regions' => database_path('migrations')], 'algeria-geo-regions');
+        $this->publishes([$migrations.'/dairas' => database_path('migrations')], 'algeria-geo-dairas');
     }
 }
