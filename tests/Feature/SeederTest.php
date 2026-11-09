@@ -5,7 +5,9 @@ use Chaima24\AlgeriaGeo\Models\Commune;
 use Chaima24\AlgeriaGeo\Models\Daira;
 use Chaima24\AlgeriaGeo\Models\Region;
 use Chaima24\AlgeriaGeo\Models\Wilaya;
+use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 beforeEach(fn () => $this->seed(AlgeriaGeoSeeder::class));
 
@@ -20,7 +22,8 @@ it('adds all the data with its links', function () {
     expect($commune->name)->toBe('Adrar')
         ->and($commune->wilaya->name)->toBe('Adrar')
         ->and($commune->daira->name)->toBe('Adrar')
-        ->and($commune->wilaya->region->name)->toBe('SUD');
+        ->and($commune->wilaya->region->name)->toBe('SUD')
+        ->and($commune->wilaya->region->arabic_name)->toBe('الجنوب');
 });
 
 it('adds nothing when run again', function () {
@@ -81,6 +84,27 @@ it('fills regions and dairas added after the first install', function () {
 
     expect(Wilaya::whereNull('region_id')->count())->toBe(0)
         ->and(Commune::whereNull('daira_id')->count())->toBe(0);
+});
+
+it('fills region Arabic names for installs made before v1.1.0', function () {
+    DB::table('regions')->update(['arabic_name' => null]);
+
+    $this->seed(AlgeriaGeoSeeder::class);
+
+    expect(Region::pluck('arabic_name', 'id')->all())
+        ->toBe([1 => 'الوسط', 2 => 'الشرق', 3 => 'الغرب', 4 => 'الجنوب']);
+});
+
+it('still works before the Arabic name migration has run', function () {
+    Schema::table('regions', fn (Blueprint $table) => $table->dropColumn('arabic_name'));
+    DB::table('regions')->delete();
+
+    $this->seed(AlgeriaGeoSeeder::class);
+
+    expect(Region::count())->toBe(4);
+
+    // Put the column back so the test cleanup can roll the migration back.
+    Schema::table('regions', fn (Blueprint $table) => $table->string('arabic_name')->nullable());
 });
 
 it('keeps a link you cleared yourself', function () {

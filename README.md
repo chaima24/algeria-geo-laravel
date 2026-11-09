@@ -79,7 +79,7 @@ sprintf('%02d', $wilaya->id);   // 01
 |---|---|
 | `wilayas` | `id`, `name`, `arabic_name`, `phone_code`, `latitude`, `longitude`, `region_id` (with regions) |
 | `communes` | `id`, `wilaya_id`, `name`, `arabic_name`, `post_code`, `latitude`, `longitude`, `daira_id` (with dairas) |
-| `regions` | `id`, `name` |
+| `regions` | `id`, `name`, `arabic_name` |
 | `dairas` | `id`, `wilaya_id`, `name`, `arabic_name` |
 
 ## Extending the models
@@ -124,6 +124,17 @@ php artisan db:seed --class="Chaima24\AlgeriaGeo\Database\AlgeriaGeoSeeder"
 - When you add regions or dairas after the first install, the seeder fills `region_id` or `daira_id`. It does this only while that column is empty on every row.
 
 A wilaya can't be deleted while it still has communes or dairas.
+
+### Upgrading
+
+To get the region Arabic names (added in v1.1.0) in an app that already has regions:
+
+```bash
+composer update chaima24/algeria-geo-laravel
+php artisan algeria-geo:install --regions
+```
+
+This publishes the new migration, runs it, and fills the Arabic names. Everything else stays as it is.
 
 ### Multi-tenant apps
 

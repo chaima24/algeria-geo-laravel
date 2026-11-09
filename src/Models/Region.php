@@ -10,7 +10,7 @@ class Region extends Model
 {
     protected $table = 'regions';
 
-    protected $fillable = ['name'];
+    protected $fillable = ['name', 'arabic_name'];
 
     public function wilayas(): HasMany
     {

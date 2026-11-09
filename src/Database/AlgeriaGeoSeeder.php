@@ -21,7 +21,15 @@ class AlgeriaGeoSeeder extends Seeder
             $hasDairas = Schema::hasTable('dairas');
 
             if ($hasRegions) {
-                $this->insertMissing('regions', $this->rows('regions'));
+                // arabic_name was added in v1.1.0, so older installs may not have it yet.
+                $hasArabicName = Schema::hasColumn('regions', 'arabic_name');
+                $regions = $this->rows('regions');
+
+                if ($hasArabicName) {
+                    $this->fillNewColumn('regions', 'arabic_name', $regions);
+                }
+
+                $this->insertMissing('regions', $this->without($regions, $hasArabicName ? [] : ['arabic_name']));
             }
 
             $wilayas = $this->rows('wilayas');

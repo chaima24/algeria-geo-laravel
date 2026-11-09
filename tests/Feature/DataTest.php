@@ -59,4 +59,4 @@ it('has names in French and Arabic', function (string $file) {
         expect($row['name'])->not->toBeEmpty()
             ->and($row['arabic_name'])->not->toBeEmpty();
     }
-})->with(['wilayas', 'dairas', 'communes']);
+})->with(['regions', 'wilayas', 'dairas', 'communes']);

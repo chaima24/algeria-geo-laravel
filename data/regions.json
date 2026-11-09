@@ -1,6 +1,6 @@
 [
-  {"id": 1, "name": "CENTRE"},
-  {"id": 2, "name": "EST"},
-  {"id": 3, "name": "OUEST"},
-  {"id": 4, "name": "SUD"}
+  {"id": 1, "name": "CENTRE", "arabic_name": "الوسط"},
+  {"id": 2, "name": "EST", "arabic_name": "الشرق"},
+  {"id": 3, "name": "OUEST", "arabic_name": "الغرب"},
+  {"id": 4, "name": "SUD", "arabic_name": "الجنوب"}
 ]

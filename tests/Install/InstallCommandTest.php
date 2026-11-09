@@ -47,7 +47,8 @@ it('installs regions and dairas when asked', function () {
         ->and(Daira::count())->toBe(551)
         ->and(Wilaya::whereNull('region_id')->count())->toBe(0)
         ->and(Commune::whereNull('daira_id')->count())->toBe(0)
-        ->and(publishedMigrations())->toHaveCount(4);
+        ->and(Region::find(1)->arabic_name)->toBe('الوسط')
+        ->and(publishedMigrations())->toHaveCount(5);
 });
 
 it('adds regions and dairas later and keeps edits', function () {
